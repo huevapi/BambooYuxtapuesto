@@ -1,0 +1,8 @@
+{
+	"name": "jojo",
+	"dependencies": {
+		"express":"",
+		"socket.io":""
+	},
+	"version":"0.0.1"
+}

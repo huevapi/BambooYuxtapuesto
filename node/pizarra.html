@@ -4,6 +4,7 @@
 	<meta charset="utf-8" />
 	<title></title>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js" type="text/javascript"></script>
+	<script src="/socket.io/socket.io.js"></script>
 	<style type="text/css">
 	canvas {
 		border: 1px solid #333;
@@ -16,6 +17,9 @@
 	</div>
 
 	<script type="text/javascript">
+	
+	var socket = io.connect('http://localhost');
+	
 	//context = document.getElementById('canvasInAPerfectWorld').getContext("2d");
 	var canvasDiv = document.getElementById('canvasDiv');
 	canvas = document.createElement('canvas');
@@ -33,12 +37,12 @@
 
 	  paint = true;
 	  addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
-	  redraw();
+	  //redraw();
 	});
 	$('#canvas').mousemove(function(e){
 	  if(paint){
 	    addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
-	    redraw();
+	    //redraw();
 	  }
 	});
 	$('#canvas').mouseup(function(e){
@@ -57,7 +61,14 @@
 	  clickX.push(x);
 	  clickY.push(y);
 	  clickDrag.push(dragging);
+	  socket.emit('addClick', {x: x, y:y, dragging: dragging});
 	}
+	socket.on('redraw', function(pizarra){
+		clickX = pizarra.x;
+		clickY = pizarra.y;
+		clickDrag = pizarra.drag;
+		redraw();
+	})
 	function redraw() {
 	  canvas.width = canvas.width; // Clears the canvas
 
