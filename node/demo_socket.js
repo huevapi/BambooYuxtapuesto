@@ -4,8 +4,10 @@ var app = require('http').createServer(handler)
 
 app.listen(3000);
 
+io.set('log level', 1);
+
 function handler (req, res) {
-  var peticion = (req.url == '/') ? '/pizarra.html' : req.url;
+  var peticion = (req.url == '/') ? '/canvas.html' : req.url;
   fs.readFile(__dirname + peticion,
   function (err, data) {
     if (err) {
@@ -22,11 +24,13 @@ var conexiones = [];
 var points = {}
 io.sockets.on('connection', function (socket) {
 	conexiones.push(socket);
-	console.log('conexion registrada');
-	
+
 	socket.emit('redraw', points);
+
 	socket.on('addClick', function(data) {
 		points[data.x + 'x' + data.y] = data.color;
-		socket.emit('redraw', points);
+		for(var i = 0 ; i < conexiones.length; i++) {
+			conexiones[i].emit('redraw', points);
+		}
 	})
 });

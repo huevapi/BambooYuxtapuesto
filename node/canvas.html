@@ -17,7 +17,7 @@
 	</div>
 
 	<script type="text/javascript">
-	var socket = io.connect('http://localhost');
+	var socket = io.connect('http://192.168.10.127');
 
 	var canvasDiv = document.getElementById('canvasDiv');
 	canvas = document.createElement('canvas');
@@ -65,19 +65,20 @@
 	  socket.emit('addClick', {x: x, y:y, color: color});
 	}
 	function redraw(points) {
-	  canvas.width = canvas.width; // Clears the canvas
+	  //canvas.width = canvas.width; // Clears the canvas
 	  context.lineJoin = "round";
 	  context.lineWidth = 5;
 
 	  for(var key in points)
-	  {		
-              context.strokeStyle = points[key];
-              context.beginPath();
+	  {
+		context.beginPath();
+              //context.strokeStyle = points[key];
               xy = key.split('x');
-              context.arc(xy[0], xy[1], 1, 1, Math.PI*2, true);
+              context.arc(xy[0], xy[1], 3, 3, Math.PI*2, true);
+		context.fillStyle = points[key];
+		context.fill();
+		context.closePath();
 	    }
-            context.closePath();
-            context.stroke();
           }
 	  socket.on('redraw', redraw);
 	</script>
